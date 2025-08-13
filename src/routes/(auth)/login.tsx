@@ -1,5 +1,5 @@
 import { Card } from "@/components/retroui/Card";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { Input } from "@/components/retroui/Input";
 import { Label } from "@/components/retroui/Label";
@@ -8,22 +8,24 @@ import api, { setHeader } from "@/api";
 import { useAtom } from "jotai/react";
 import tokenAtom from "@/stores/token";
 import userAtom from "@/stores/user";
+import * as z from "zod";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
 });
 
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-const defaultLoginRequest: LoginRequest = { email: "", password: "" };
+const LoginRequestSchema = z.object({
+  email: z.email().min(8, "Email must be at least 8 charecters long"),
+  password: z.string().min(8, "Password must be at least 8 charecters long"),
+});
 
 function RouteComponent() {
   const [_token, setToken] = useAtom(tokenAtom);
   const [_user, setUser] = useAtom(userAtom);
+  const navigate = useNavigate({ from: "/login" });
   const form = useForm({
-    defaultValues: defaultLoginRequest,
+    defaultValues: { email: "", password: "" },
+    validators: { onChange: LoginRequestSchema },
     onSubmit: async ({ value }) => {
       console.log(value);
       api.post("/api/v1/auth/token/login", value).then((res) => {
@@ -31,6 +33,14 @@ function RouteComponent() {
         setHeader("Authorization", `Token ${res.data.auth_token}`);
         api.get("/api/v1/auth/users/me/").then((res) => {
           setUser(res.data);
+          if (res.data.level === "EGT") {
+            navigate({ to: "/orgs" });
+          } else {
+            navigate({
+              to: "/org/$orgId",
+              params: { orgId: res.data.extra.org_id },
+            });
+          }
         });
       });
     },
@@ -60,8 +70,16 @@ function RouteComponent() {
                       type="email"
                       value={field.state.value}
                       onBlur={field.handleBlur}
+                      aria-invalid={!field.state.meta.isValid}
                       onChange={(e) => field.handleChange(e.target.value)}
-                    />
+                    />{" "}
+                    {field.state.meta.errors && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {field.state.meta.errors.map((e) => (
+                          <p>{e?.message}</p>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               }}
@@ -77,8 +95,14 @@ function RouteComponent() {
                       id="password"
                       value={field.state.value}
                       onBlur={field.handleBlur}
+                      aria-invalid={!field.state.meta.isValid}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
+                    {field.state.meta.errors && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {field.state.meta.errors.map((e) => e?.message)}
+                      </div>
+                    )}
                   </div>
                 );
               }}

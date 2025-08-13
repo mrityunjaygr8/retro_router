@@ -9,9 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OrgsRouteImport } from './routes/orgs'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as OrgOrgIdIndexRouteImport } from './routes/org/$orgId/index'
 
+const OrgsRoute = OrgsRouteImport.update({
+  id: '/orgs',
+  path: '/orgs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -22,35 +29,55 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrgOrgIdIndexRoute = OrgOrgIdIndexRouteImport.update({
+  id: '/org/$orgId/',
+  path: '/org/$orgId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/orgs': typeof OrgsRoute
   '/login': typeof authLoginRoute
+  '/org/$orgId': typeof OrgOrgIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/orgs': typeof OrgsRoute
   '/login': typeof authLoginRoute
+  '/org/$orgId': typeof OrgOrgIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/orgs': typeof OrgsRoute
   '/(auth)/login': typeof authLoginRoute
+  '/org/$orgId/': typeof OrgOrgIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/' | '/orgs' | '/login' | '/org/$orgId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/(auth)/login'
+  to: '/' | '/orgs' | '/login' | '/org/$orgId'
+  id: '__root__' | '/' | '/orgs' | '/(auth)/login' | '/org/$orgId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OrgsRoute: typeof OrgsRoute
   authLoginRoute: typeof authLoginRoute
+  OrgOrgIdIndexRoute: typeof OrgOrgIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/orgs': {
+      id: '/orgs'
+      path: '/orgs'
+      fullPath: '/orgs'
+      preLoaderRoute: typeof OrgsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +92,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/org/$orgId/': {
+      id: '/org/$orgId/'
+      path: '/org/$orgId'
+      fullPath: '/org/$orgId'
+      preLoaderRoute: typeof OrgOrgIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OrgsRoute: OrgsRoute,
   authLoginRoute: authLoginRoute,
+  OrgOrgIdIndexRoute: OrgOrgIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
