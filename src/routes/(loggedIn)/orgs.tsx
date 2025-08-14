@@ -7,6 +7,7 @@ import { Button } from "@/components/retroui/Button";
 import { LinkIcon } from "@phosphor-icons/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Breadcrumb } from "@/components/retroui/Breadcrumb";
 
 export const Route = createFileRoute("/(loggedIn)/orgs")({
   component: RouteComponent,
@@ -20,11 +21,25 @@ function RouteComponent() {
   const orgsQuery = useSuspenseQuery(useGetOrgs);
   const orgs = orgsQuery.data;
   if (orgsQuery.isLoading) {
-    console.log("is loading");
     return <Text as="h4">Loading...</Text>;
   }
   return (
     <>
+      <Breadcrumb className="mb-4">
+        <Breadcrumb.List>
+          <Breadcrumb.Item>
+            <Breadcrumb.Link>
+              <Link to="/">
+                <Text as="h6">Home</Text>
+              </Link>
+            </Breadcrumb.Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Separator />
+          <Breadcrumb.Item>
+            <Text as="h6">Organisations</Text>
+          </Breadcrumb.Item>
+        </Breadcrumb.List>
+      </Breadcrumb>
       <Table>
         <Table.Header>
           <Table.Row>
