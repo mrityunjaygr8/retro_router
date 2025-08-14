@@ -9,20 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as OrgsRouteImport } from './routes/orgs'
+import { Route as loggedInRouteRouteImport } from './routes/(loggedIn)/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as loggedInOrgsRouteImport } from './routes/(loggedIn)/orgs'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as OrgOrgIdIndexRouteImport } from './routes/org/$orgId/index'
 
-const OrgsRoute = OrgsRouteImport.update({
-  id: '/orgs',
-  path: '/orgs',
+const loggedInRouteRoute = loggedInRouteRouteImport.update({
+  id: '/(loggedIn)',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const loggedInOrgsRoute = loggedInOrgsRouteImport.update({
+  id: '/orgs',
+  path: '/orgs',
+  getParentRoute: () => loggedInRouteRoute,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/(auth)/login',
@@ -36,46 +41,53 @@ const OrgOrgIdIndexRoute = OrgOrgIdIndexRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/orgs': typeof OrgsRoute
+  '/': typeof loggedInRouteRouteWithChildren
   '/login': typeof authLoginRoute
+  '/orgs': typeof loggedInOrgsRoute
   '/org/$orgId': typeof OrgOrgIdIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/orgs': typeof OrgsRoute
+  '/': typeof loggedInRouteRouteWithChildren
   '/login': typeof authLoginRoute
+  '/orgs': typeof loggedInOrgsRoute
   '/org/$orgId': typeof OrgOrgIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/orgs': typeof OrgsRoute
+  '/(loggedIn)': typeof loggedInRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
+  '/(loggedIn)/orgs': typeof loggedInOrgsRoute
   '/org/$orgId/': typeof OrgOrgIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/orgs' | '/login' | '/org/$orgId'
+  fullPaths: '/' | '/login' | '/orgs' | '/org/$orgId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/orgs' | '/login' | '/org/$orgId'
-  id: '__root__' | '/' | '/orgs' | '/(auth)/login' | '/org/$orgId/'
+  to: '/' | '/login' | '/orgs' | '/org/$orgId'
+  id:
+    | '__root__'
+    | '/'
+    | '/(loggedIn)'
+    | '/(auth)/login'
+    | '/(loggedIn)/orgs'
+    | '/org/$orgId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  OrgsRoute: typeof OrgsRoute
+  loggedInRouteRoute: typeof loggedInRouteRouteWithChildren
   authLoginRoute: typeof authLoginRoute
   OrgOrgIdIndexRoute: typeof OrgOrgIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/orgs': {
-      id: '/orgs'
-      path: '/orgs'
-      fullPath: '/orgs'
-      preLoaderRoute: typeof OrgsRouteImport
+    '/(loggedIn)': {
+      id: '/(loggedIn)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof loggedInRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -84,6 +96,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(loggedIn)/orgs': {
+      id: '/(loggedIn)/orgs'
+      path: '/orgs'
+      fullPath: '/orgs'
+      preLoaderRoute: typeof loggedInOrgsRouteImport
+      parentRoute: typeof loggedInRouteRoute
     }
     '/(auth)/login': {
       id: '/(auth)/login'
@@ -102,9 +121,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface loggedInRouteRouteChildren {
+  loggedInOrgsRoute: typeof loggedInOrgsRoute
+}
+
+const loggedInRouteRouteChildren: loggedInRouteRouteChildren = {
+  loggedInOrgsRoute: loggedInOrgsRoute,
+}
+
+const loggedInRouteRouteWithChildren = loggedInRouteRoute._addFileChildren(
+  loggedInRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  OrgsRoute: OrgsRoute,
+  loggedInRouteRoute: loggedInRouteRouteWithChildren,
   authLoginRoute: authLoginRoute,
   OrgOrgIdIndexRoute: OrgOrgIdIndexRoute,
 }
