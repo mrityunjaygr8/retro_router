@@ -13,7 +13,7 @@ import { Route as loggedInRouteRouteImport } from './routes/(loggedIn)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as loggedInOrgsRouteImport } from './routes/(loggedIn)/orgs'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
-import { Route as OrgOrgIdIndexRouteImport } from './routes/org/$orgId/index'
+import { Route as loggedInOrgOrgIdIndexRouteImport } from './routes/(loggedIn)/org/$orgId/index'
 
 const loggedInRouteRoute = loggedInRouteRouteImport.update({
   id: '/(loggedIn)',
@@ -34,23 +34,23 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrgOrgIdIndexRoute = OrgOrgIdIndexRouteImport.update({
+const loggedInOrgOrgIdIndexRoute = loggedInOrgOrgIdIndexRouteImport.update({
   id: '/org/$orgId/',
   path: '/org/$orgId/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => loggedInRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof loggedInRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/orgs': typeof loggedInOrgsRoute
-  '/org/$orgId': typeof OrgOrgIdIndexRoute
+  '/org/$orgId': typeof loggedInOrgOrgIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof loggedInRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/orgs': typeof loggedInOrgsRoute
-  '/org/$orgId': typeof OrgOrgIdIndexRoute
+  '/org/$orgId': typeof loggedInOrgOrgIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -58,7 +58,7 @@ export interface FileRoutesById {
   '/(loggedIn)': typeof loggedInRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(loggedIn)/orgs': typeof loggedInOrgsRoute
-  '/org/$orgId/': typeof OrgOrgIdIndexRoute
+  '/(loggedIn)/org/$orgId/': typeof loggedInOrgOrgIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,14 +71,13 @@ export interface FileRouteTypes {
     | '/(loggedIn)'
     | '/(auth)/login'
     | '/(loggedIn)/orgs'
-    | '/org/$orgId/'
+    | '/(loggedIn)/org/$orgId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   loggedInRouteRoute: typeof loggedInRouteRouteWithChildren
   authLoginRoute: typeof authLoginRoute
-  OrgOrgIdIndexRoute: typeof OrgOrgIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -111,22 +110,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/org/$orgId/': {
-      id: '/org/$orgId/'
+    '/(loggedIn)/org/$orgId/': {
+      id: '/(loggedIn)/org/$orgId/'
       path: '/org/$orgId'
       fullPath: '/org/$orgId'
-      preLoaderRoute: typeof OrgOrgIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof loggedInOrgOrgIdIndexRouteImport
+      parentRoute: typeof loggedInRouteRoute
     }
   }
 }
 
 interface loggedInRouteRouteChildren {
   loggedInOrgsRoute: typeof loggedInOrgsRoute
+  loggedInOrgOrgIdIndexRoute: typeof loggedInOrgOrgIdIndexRoute
 }
 
 const loggedInRouteRouteChildren: loggedInRouteRouteChildren = {
   loggedInOrgsRoute: loggedInOrgsRoute,
+  loggedInOrgOrgIdIndexRoute: loggedInOrgOrgIdIndexRoute,
 }
 
 const loggedInRouteRouteWithChildren = loggedInRouteRoute._addFileChildren(
@@ -137,7 +138,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   loggedInRouteRoute: loggedInRouteRouteWithChildren,
   authLoginRoute: authLoginRoute,
-  OrgOrgIdIndexRoute: OrgOrgIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
