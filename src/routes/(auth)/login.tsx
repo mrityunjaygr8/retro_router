@@ -4,10 +4,10 @@ import { useForm } from "@tanstack/react-form";
 import { Input } from "@/components/retroui/Input";
 import { Label } from "@/components/retroui/Label";
 import { Button } from "@/components/retroui/Button";
-import api, { setHeader } from "@/api";
+import api, { setHeader } from "@/lib/api";
 import { useAtom } from "jotai/react";
-import tokenAtom from "@/stores/token";
-import userAtom from "@/stores/user";
+import tokenAtom from "@/lib/stores/token";
+import userAtom from "@/lib/stores/user";
 import * as z from "zod";
 
 export const Route = createFileRoute("/(auth)/login")({
@@ -27,10 +27,9 @@ function RouteComponent() {
     defaultValues: { email: "", password: "" },
     validators: { onChange: LoginRequestSchema },
     onSubmit: async ({ value }) => {
-      console.log(value);
       api.post("/api/v1/auth/token/login", value).then((res) => {
         setToken(res.data.auth_token);
-        setHeader("Authorization", `Token ${res.data.auth_token}`);
+        // setHeader("Authorization", `Token ${res.data.auth_token}`);
         api.get("/api/v1/auth/users/me/").then((res) => {
           setUser(res.data);
           if (res.data.level === "EGT") {
@@ -72,11 +71,11 @@ function RouteComponent() {
                       onBlur={field.handleBlur}
                       aria-invalid={!field.state.meta.isValid}
                       onChange={(e) => field.handleChange(e.target.value)}
-                    />{" "}
+                    />
                     {field.state.meta.errors && (
                       <div className="text-red-500 text-sm mt-1">
-                        {field.state.meta.errors.map((e) => (
-                          <p>{e?.message}</p>
+                        {field.state.meta.errors.map((e, idx) => (
+                          <p key={idx}>{e?.message}</p>
                         ))}
                       </div>
                     )}
@@ -100,7 +99,9 @@ function RouteComponent() {
                     />
                     {field.state.meta.errors && (
                       <div className="text-red-500 text-sm mt-1">
-                        {field.state.meta.errors.map((e) => e?.message)}
+                        {field.state.meta.errors.map((e, idx) => (
+                          <p key={idx}>{e?.message}</p>
+                        ))}
                       </div>
                     )}
                   </div>
