@@ -8,8 +8,8 @@ export const Route = createFileRoute("/(loggedIn)")({
 function RouteComponent() {
   return (
     <>
-      <Header />
-      <div className="px-2">
+      <div className="max-w-7xl mx-auto">
+        <Header />
         <Outlet />
       </div>
     </>
