@@ -9,7 +9,9 @@ function RouteComponent() {
   return (
     <>
       <Header />
-      <Outlet />
+      <div className="px-2">
+        <Outlet />
+      </div>
     </>
   );
 }
