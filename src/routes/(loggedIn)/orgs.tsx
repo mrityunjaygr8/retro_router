@@ -14,12 +14,12 @@ export const Route = createFileRoute("/(loggedIn)/orgs")({
   component: RouteComponent,
   errorComponent: () => <h1>Oops an errors has occurred</h1>,
   loader: ({ context: { queryClient } }) =>
-    queryClient.ensureQueryData(useGetOrgs()),
+    queryClient.ensureQueryData(useGetOrgs({})),
 });
 
 function RouteComponent() {
   dayjs.extend(relativeTime);
-  const { data: orgs, isLoading } = useSuspenseQuery(useGetOrgs());
+  const { data: orgs, isLoading } = useSuspenseQuery(useGetOrgs({}));
   if (isLoading) {
     return <Text as="h4">Loading...</Text>;
   }
