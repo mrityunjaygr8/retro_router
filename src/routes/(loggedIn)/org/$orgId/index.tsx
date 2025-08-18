@@ -1,6 +1,6 @@
 import { useGetOrg } from "@/fetchers/org";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 
 export const Route = createFileRoute("/(loggedIn)/org/$orgId/")({

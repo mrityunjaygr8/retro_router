@@ -8,6 +8,7 @@ import { LinkIcon } from "@phosphor-icons/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Breadcrumb } from "@/components/retroui/Breadcrumb";
+import { Suspense } from "react";
 
 export const Route = createFileRoute("/(loggedIn)/orgs")({
   component: RouteComponent,
@@ -18,13 +19,12 @@ export const Route = createFileRoute("/(loggedIn)/orgs")({
 
 function RouteComponent() {
   dayjs.extend(relativeTime);
-  const orgsQuery = useSuspenseQuery(useGetOrgs());
-  const orgs = orgsQuery.data;
-  if (orgsQuery.isLoading) {
+  const { data: orgs, isLoading } = useSuspenseQuery(useGetOrgs());
+  if (isLoading) {
     return <Text as="h4">Loading...</Text>;
   }
   return (
-    <>
+    <Suspense>
       <Breadcrumb className="mb-4">
         <Breadcrumb.List>
           <Breadcrumb.Item>
@@ -74,6 +74,6 @@ function RouteComponent() {
           ))}
         </Table.Body>
       </Table>
-    </>
+    </Suspense>
   );
 }

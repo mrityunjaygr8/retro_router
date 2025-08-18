@@ -45,7 +45,7 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Links />
             <Text as="h6">
-              {user["first_name"]} {user["last_name"]}
+              {user!["first_name"]} {user!["last_name"]}
             </Text>
           </div>
 

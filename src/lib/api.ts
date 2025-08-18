@@ -1,6 +1,6 @@
 import axios from "axios";
-// const BASE_URL = "https://dev.parham.in";
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://dev.parham.in";
+// const BASE_URL = "http://localhost:8000";
 
 let api = axios.create({ baseURL: BASE_URL });
 const setHeader = (key: string, value: string) => {

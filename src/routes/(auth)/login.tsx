@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { Input } from "@/components/retroui/Input";
 import { Label } from "@/components/retroui/Label";
 import { Button } from "@/components/retroui/Button";
-import api, { setHeader } from "@/lib/api";
+import api from "@/lib/api";
 import { useAtom } from "jotai/react";
 import tokenAtom from "@/lib/stores/token";
 import userAtom from "@/lib/stores/user";
