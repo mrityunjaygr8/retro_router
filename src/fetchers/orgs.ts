@@ -1,9 +1,11 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, type UseQueryOptions } from "@tanstack/react-query";
 import api from "@/lib/api";
 
-const useGetOrgs = queryOptions({
-  queryKey: ["orgs"],
-  queryFn: () => api.get("/api/v1/org/").then((res) => res.data),
-});
+const useGetOrgs = (options?: Omit<UseQueryOptions, "queryKey" | "queryFn">) =>
+  queryOptions({
+    ...options,
+    queryKey: ["orgs"],
+    queryFn: () => api.get("/api/v1/org/").then((res) => res.data),
+  });
 
 export { useGetOrgs };
