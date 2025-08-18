@@ -32,6 +32,9 @@ const Header = () => {
     setIsOpen(!isOpen);
   };
   const user = useAtomValue(userAtom);
+  if (user === null) {
+    return <Text as="h4">No User</Text>;
+  }
   return (
     <nav className=" bg-white border-solid border-b-8 sticky top-0 z-50 mb-4">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
