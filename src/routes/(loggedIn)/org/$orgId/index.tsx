@@ -14,8 +14,7 @@ export const Route = createFileRoute("/(loggedIn)/org/$orgId/")({
 
 function RouteComponent() {
   const { orgId } = Route.useParams();
-  const orgQuery = useSuspenseQuery(useGetOrg({ orgId }));
-  const org = orgQuery.data;
+  const { data: org } = useSuspenseQuery(useGetOrg({ orgId }));
   return (
     <div>
       <Suspense>
