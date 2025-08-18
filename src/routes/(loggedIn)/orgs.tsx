@@ -28,11 +28,9 @@ function RouteComponent() {
       <Breadcrumb className="mb-4">
         <Breadcrumb.List>
           <Breadcrumb.Item>
-            <Breadcrumb.Link>
-              <Link to="/">
-                <Text as="h6">Home</Text>
-              </Link>
-            </Breadcrumb.Link>
+            <Link to="/">
+              <Text as="h6">Home</Text>
+            </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Separator />
           <Breadcrumb.Item>
