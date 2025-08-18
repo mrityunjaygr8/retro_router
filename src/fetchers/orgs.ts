@@ -1,6 +1,6 @@
-import { queryOptions, type UseQueryOptions } from "@tanstack/react-query";
 import api from "@/lib/api";
 import type { PaginatedData } from "@/lib/types";
+import constructQueryOptions from "./constructor";
 
 interface ListOrgs {
   id: number;
@@ -18,19 +18,15 @@ interface ListOrgs {
   };
 }
 
-const useGetOrgs = <TData = PaginatedData<ListOrgs>, TError = Error>(
-  options?: Omit<
-    UseQueryOptions<PaginatedData<ListOrgs>, TError, TData>,
-    "queryKey" | "queryFn"
-  >,
-) =>
-  queryOptions({
-    ...options,
-    queryKey: ["orgs"],
-    queryFn: async (): Promise<PaginatedData<ListOrgs>> => {
-      const { data } = await api.get("/api/v1/org/");
-      return data;
-    },
-  });
+const queryFn = async (): Promise<PaginatedData<ListOrgs>> => {
+  const { data } = await api.get("/api/v1/org/");
+  return data;
+};
+
+const queryKey = (_params: Params) => ["orgs"];
+interface Params {}
+
+const useGetOrgs = (params: Params) =>
+  constructQueryOptions(params, queryKey, queryFn);
 
 export { useGetOrgs };
